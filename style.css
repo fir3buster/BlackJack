@@ -1,0 +1,60 @@
+body {
+    background-color: lightgray;
+    display: flex;
+    text-align:center;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.container {
+    border: 2px solid black;
+    height: 90vh;
+    width: 90vw;
+    background-color: green;
+    /* display: flex */
+}
+
+.solid-black {
+    border: 1px solid black;
+}
+
+.row.top-row{
+    height: 100px;
+    /* background-color: lightsalmon */
+}
+
+.row.row-content {
+    height: 85%;
+    /* background-color: lightgreen; */
+    /* display: gird;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr); */
+}
+
+#deck-dealer img {
+    width: 10%;
+    height: 10%;
+    margin: 1% -1%;
+}
+
+#deck-player img {
+    width: 10%;
+    height: 10%;
+    margin: 1% -1%;
+}
+
+.btn.btn-primary {
+    color: black;
+    border-radius: 75%;
+}
+
+#hit {
+    color: black;
+    border-radius: 75%;
+}
+
+#stand {
+    color: black;
+    border-radius: 75%;
+}
