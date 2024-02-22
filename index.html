@@ -14,23 +14,32 @@
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
-        <div class="container">
+        <div class="container">           
             <div class="row top-row">
-                <div class="col-md-12 solid-black">column</div>
+                <div class="col-md-12 solid-black">
+                    <h1 id="game-title">BlackJack</h1>
+                </div>
             </div>
             <div class="row row-content">
-                <div class="col-md-2">left col</div>
-                <div class="col-md-8 solid-black">
+                <!-- <div class="col-sm-2 solid-black">left col</div> -->
+                <div class="col-sm-12 solid-black" >
                     <div id="dealer-total">
-                        <h2>Dealer</h2>
+                        <h3 class="text">Dealer: </h3>
+                        <h3 class="text" id="points-dealer"></h3>
                     </div>
 
                     <div id="player-total">
-                        <h2>Player</h2>
+                        <h3 class="text">Player: </h3>
+                        <h3 class="text" id="points-player"></h3>
                     </div>
 
                     <div id="deck-dealer">
                         <img id="hidden" class="img-fluid" src="img/deck/BACK.png" />
+                    </div>
+
+                    <div id="money-bet">
+                        <h3>Bet: </h3>
+                        <h3 id="total-bet"></h3>
                     </div>
 
                     <div id="deck-player"></div>
@@ -38,16 +47,23 @@
                     <div id="results"></div>
 
                     <!-- <button type="button" class="col-md-2 btn btn-primary">
-                        hit
+                    hit
                     </button> -->
-                    <button type="button" class="btn btn-secondary" id="hit">
+                    <button type="button" id="chips">
+                        <img id="dollars" src="img/chips/100_d.png" />
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="hit-btn">
                         Hit
                     </button>
-                    <button type="button" class="btn btn-secondary" id="stand">
+                    <button type="button" class="btn btn-secondary" id="stand-btn">
                         Stand
                     </button>
+                    <button type="button" class="btn btn-secondary" id="deal-hide-btn">
+                        Deal
+                    </button>
+                    </div>
                 </div>
-                <div class="col-md-2">right col</div>
+                <!-- <div class="col-sm-2 solid-black">right col</div> -->
             </div>
         </div>
     </body>

@@ -103,7 +103,6 @@ let moneyBet = 0;
 // 9. total money/bankroll => int
 let bankroll = 0;
 // // 11. cardindex
-// const
 
 /*
 Function
@@ -116,21 +115,22 @@ Function
 */
 
 function buildDeck() {
-    const values = [
-        "A",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
-        "J",
-        "Q",
-        "K",
-    ];
+    // const values = [
+    //     "A",
+    //     "2",
+    //     "3",
+    //     "4",
+    //     "5",
+    //     "6",
+    //     "7",
+    //     "8",
+    //     "9",
+    //     "10",
+    //     "J",
+    //     "Q",
+    //     "K",
+    // ];
+    const values = ["A", "3", "10", "J"];
     // S = Spades, H = Heart, C = Club, D = Diamond
     const suits = ["S", "H", "C", "D"];
 
@@ -193,20 +193,28 @@ function startGame() {
     pointsOfPlayer();
 
     // event listener
-    document.querySelector("#hit").addEventListener("click", hitAction);
-    document.querySelector("#stand").addEventListener("click", standAction);
+    document.querySelector("#hit-btn").addEventListener("click", hitAction);
+    document.querySelector("#stand-btn").addEventListener("click", standAction);
+    // document.querySelector("#deal").addEventListener("click", dealAction);
 }
 
 function pointsOfDealer(initial = true) {
     if (initial) {
-        getHiddenCard();
-
+        document.querySelector("#hidden").style.visibility = "visible";
         const initialCard = deckOfCard.pop();
-        console.log(initialCard);
+        console.log(`DEALER INITIAL CARD: ${initialCard}`);
         const cardValue = transformStringToNumber(initialCard[0]);
         totalPointsDealer += cardValue;
-        calAceDealer += checkNumAce(cardValue);
+        calAceDealer += checkNumAce(initialCard[0]);
+        document.querySelector("#points-dealer").innerHTML = totalPointsDealer;
+        document.querySelector("#dealer-total").style.visibility = "visible";
         createCardDOM(initialCard, "#deck-dealer");
+
+        getHiddenCard();
+        // HAVE TO CHECK FOR DOUBLE ACE AT INITIAL
+        if (totalPointsDealer === 22) {
+            convertAceDealer();
+        }
     }
     console.log(totalPointsDealer);
 }
@@ -215,52 +223,134 @@ function pointsOfPlayer(initial = true) {
     if (initial) {
         for (i = 0; i < 2; i++) {
             const initialCard = deckOfCard.pop();
-            console.log(initialCard);
+            // console.log(`PLAYER INITIAL CARD: ${initialCard}`);
             const cardValue = transformStringToNumber(initialCard[0]);
             totalPointsPlayer += cardValue;
-            calAcePlayer += checkNumAce(cardValue);
+            calAcePlayer += checkNumAce(initialCard[0]); // use initialCard[0]
+            console.log(`INITIAL PLAYER ACE COUNT: ${calAcePlayer}`);
+            document.querySelector("#points-player").innerHTML =
+                totalPointsPlayer;
             createCardDOM(initialCard, "#deck-player");
+        }
+        document.querySelector("#player-total").style.visibility = "visible";
+
+        if (totalPointsPlayer === 21) {
+            // canDrawCard = false;
+            document.querySelector("#hit-btn").style.visibility = "hidden";
+            document.querySelector("#stand-btn").style.visibility = "hidden";
+            const timeout = setTimeout(function () {
+                revealHiddenCardDOM(hiddenCard, "#hidden");
+            }, 1000);
+
+            // const timeout = setTimeout(function (dealerDrawCard) {
+            //     revealHiddenCardDOM(hiddenCard, "#hidden");
+            //     // setTimeout(dealerDrawCard(), 1000);
+            //     dealerDrawCard();
+            // }, 3000);
+            // //Dealer to draw card if point is below 17
+            // setTimeout(dealerDrawCard(), 3000);
+        }
+
+        if (totalPointsPlayer === 22) {
+            convertAcePlayer();
         }
     }
     console.log(totalPointsPlayer);
 }
 
 function hitAction() {
-    if (!canDrawCard) {
-        return;
-    }
+    // if (!canDrawCard) {
+    //     return;
+    // }
 
     const getCard = deckOfCard.pop();
     const cardValue = transformStringToNumber(getCard[0]);
     totalPointsPlayer += cardValue;
-    calAcePlayer += checkNumAce(cardValue);
+    calAcePlayer += checkNumAce(getCard[0]);
     createCardDOM(getCard, "#deck-player");
+    convertAcePlayer();
+    document.querySelector("#points-player").innerHTML = totalPointsPlayer;
 
-    if (convertAce(totalPointsPlayer, calAcePlayer) > 21) {
-        canDrawCard = false;
+    // check for ACE COUNT
+    console.log(`HIT ACE COUNT: ${calAcePlayer}`);
+    console.log(`CHECK FOR PLAYER's POINT: ${totalPointsPlayer}`);
+    if (totalPointsPlayer > 20) {
+        // canDrawCard = false;
+        document.querySelector("#hit-btn").style.visibility = "hidden";
+        document.querySelector("#stand-btn").style.visibility = "hidden";
+        const timeout = setTimeout(function () {
+            revealHiddenCardDOM(hiddenCard, "#hidden");
+        }, 1000);
+
+        //RETURN MESSAGE YOU BUST!
+        // Dealer to draw card if point is below 17
+        dealerDrawCard();
     }
 }
 
 function standAction() {
-    totalPointsPlayer = convertAce(totalPointsPlayer, calAcePlayer);
-    canDrawCard = false;
+    totalPointsPlayer = convertAcePlayer();
+    document.querySelector("#hit-btn").style.visibility = "hidden";
+    document.querySelector("#stand-btn").style.visibility = "hidden";
 
     // TO-DO: DEALER TURN TO HIT ABOVE 17 here
     // reveal the hidden card
-    // PROPOSE USING A WHILE LOOP
+
+    const timeout = setTimeout(function () {
+        revealHiddenCardDOM(hiddenCard, "#hidden");
+    }, 1000);
+
+    dealerDrawCard();
 
     // RESULTS of who wins if-else statement
+}
+
+function placeYourBet() {
+    document.querySelector("#chips").addEventListener("click", function () {
+        totalBet(100);
+    });
+}
+
+function totalBet(value) {
+    moneyBet += value;
+    console.log(moneyBet);
+    document.querySelector("#total-bet").innerHTML = moneyBet;
+    document.querySelector("#deal-hide-btn").style.visibility = "visible";
+}
+
+function revealPlayerButtons() {
+    if (moneyBet === 0) {
+        document.querySelector("#deal-hide-btn").style.visibility = "hidden";
+    }
+    document
+        .querySelector("#deal-hide-btn")
+        .addEventListener("click", function () {
+            document.querySelector("#hit-btn").style.visibility = "visible";
+            document.querySelector("#stand-btn").style.visibility = "visible";
+            document.querySelector("#deal-hide-btn").style.visibility =
+                "hidden";
+            document.querySelector("#chips").disabled = true; // TAKE NOTE ON RESET
+            startGame();
+        });
 }
 //--------------------------------------------------------------------------------------------
 
 // GENERIC function
 function transformStringToNumber(value) {
+    // console.log(
+    //     `CHECK FOR NON VALUE in TRANSFORMING STRING: ${value}, ${typeof value}`
+    // );
+    console.log(isNaN(value));
+
     if (isNaN(value)) {
         if (value !== "A") {
             return 10;
         }
         return 11;
+    } else if (!isNaN(value) && Number(value) === 1) {
+        return 10;
     }
+
     return Number(value);
 }
 
@@ -273,6 +363,13 @@ function createCardDOM(card, element) {
     createCard.setAttribute("src", imgPath);
 }
 
+function revealHiddenCardDOM(card, element) {
+    const imgPath = `img\\deck\\${card}.png`;
+    console.log(document.querySelector(element).src);
+    document.querySelector(element).src = imgPath;
+    document.querySelector("#points-dealer").innerHTML = totalPointsDealer;
+}
+
 // i) create a function to check the number of ace in a round.
 function checkNumAce(value) {
     if (value !== "A") {
@@ -282,26 +379,73 @@ function checkNumAce(value) {
 }
 
 function getHiddenCard() {
-    const hiddenCard = deckOfCard.pop();
+    hiddenCard = deckOfCard.pop();
     const hiddenCardValue = transformStringToNumber(hiddenCard[0]);
     totalPointsDealer += hiddenCardValue;
-    calAceDealer += checkNumAce(hiddenCardValue);
+    calAceDealer += checkNumAce(hiddenCard[0]);
 }
 
 // convert the value of ACE from 11 to 1 if the total value of cards is more than 21
-function convertAce(pointsTotal, aceTotal) {
-    while (pointsTotal > 21 && aceTotal > 0) {
-        pointsTotal -= 10;
-        aceTotal -= 1;
+function convertAceDealer() {
+    while (totalPointsDealer > 21 && calAceDealer > 0) {
+        totalPointsDealer -= 10;
+        calAceDealer -= 1;
     }
-    return pointsTotal;
+    console.log(
+        `CHECK FOR POINT IN CONVERTACE FUNCTION: ${totalPointsDealer} AND ACE TOTAL: ${calAceDealer}`
+    );
+}
+
+function convertAcePlayer() {
+    while (totalPointsPlayer > 21 && calAcePlayer > 0) {
+        totalPointsPlayer -= 10;
+        calAcePlayer -= 1;
+    }
+    console.log(
+        `CHECK FOR POINT IN CONVERTACE FUNCTION: ${totalPointsPlayer} AND ACE TOTAL: ${calAcePlayer}`
+    );
+}
+
+// function dealerDrawCard() {
+//     while (totalPointsDealer < 17) {
+//         const getCard = deckOfCard.pop();
+//         const cardValue = transformStringToNumber(getCard[0]);
+//         totalPointsDealer += cardValue;
+//         calAceDealer += checkNumAce(getCard[0]);
+//         createCardDOM(getCard, "#deck-dealer");
+//         convertAceDealer();
+//     }
+// }
+
+function dealerDrawCard() {
+    const drawInterval = 1500;
+
+    function drawNextCard() {
+        if (totalPointsDealer < 17) {
+            setTimeout(function () {
+                const getCard = deckOfCard.pop();
+                const cardValue = transformStringToNumber(getCard[0]);
+                totalPointsDealer += cardValue;
+                calAceDealer += checkNumAce(getCard[0]);
+                createCardDOM(getCard, "#deck-dealer");
+                convertAceDealer();
+                document.querySelector("#points-dealer").innerHTML =
+                    totalPointsDealer;
+                // Recursively call drawNextCard after the delay
+                drawNextCard();
+            }, drawInterval);
+        }
+    }
+
+    drawNextCard();
 }
 
 //--------------------------------------------------------------------------------------------
 
 buildDeck();
 shuffleDeck();
-startGame();
+placeYourBet();
+revealPlayerButtons();
 
 // let num = 123;
 // console.log(typeof num);
