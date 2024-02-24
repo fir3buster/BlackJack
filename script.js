@@ -101,7 +101,7 @@ let canDrawCard = true;
 // 8. money bet => int
 let moneyBet = 0;
 // 9. total money/bankroll => int
-let bankroll = 0;
+let bankroll = 2000;
 // // 11. cardindex
 
 /*
@@ -306,12 +306,33 @@ function standAction() {
 }
 
 function placeYourBet() {
+    // check if bankroll < value, hide the chips
     document.querySelector("#chips").addEventListener("click", function () {
+        totalBet(5);
+    });
+    document.querySelector("#chips1").addEventListener("click", function () {
+        totalBet(25);
+    });
+    document.querySelector("#chips2").addEventListener("click", function () {
+        totalBet(50);
+    });
+    document.querySelector("#chips3").addEventListener("click", function () {
         totalBet(100);
+    });
+    document.querySelector("#chips4").addEventListener("click", function () {
+        totalBet(500);
+    });
+    document.querySelector("#chips5").addEventListener("click", function () {
+        totalBet(1000);
     });
 }
 
 function totalBet(value) {
+    if (bankroll < value) {
+        console.log("You have not enough chips!");
+        return;
+    }
+
     moneyBet += value;
     console.log(moneyBet);
     document.querySelector("#total-bet").innerHTML = moneyBet;
@@ -329,7 +350,9 @@ function revealPlayerButtons() {
             document.querySelector("#stand-btn").style.visibility = "visible";
             document.querySelector("#deal-hide-btn").style.visibility =
                 "hidden";
-            document.querySelector("#chips").disabled = true; // TAKE NOTE ON RESET
+            document
+                .querySelectorAll(".chips")
+                .forEach((e) => (e.disabled = true)); // TAKE NOTE ON RESET
             startGame();
         });
 }
@@ -356,7 +379,7 @@ function transformStringToNumber(value) {
 
 // a function to create and append card using DOM to display on the web
 function createCardDOM(card, element) {
-    const imgPath = `img\\deck\\${card}.png`;
+    const imgPath = `img\\deck\\${card}.png`; // PATH.JOIN (ISSUE WITH DEPLOYMENT)
     const createCard = document.createElement("img");
     document.querySelector(element).appendChild(createCard);
     createCard.classList.add("img");
@@ -364,7 +387,7 @@ function createCardDOM(card, element) {
 }
 
 function revealHiddenCardDOM(card, element) {
-    const imgPath = `img\\deck\\${card}.png`;
+    const imgPath = `img\\deck\\${card}.png`; // PATH.JOIN (ISSUE WITH DEPLOYMENT)
     console.log(document.querySelector(element).src);
     document.querySelector(element).src = imgPath;
     document.querySelector("#points-dealer").innerHTML = totalPointsDealer;

@@ -14,14 +14,30 @@
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
+        <!-- <div class="top-container">
+            <div class="row top-row">
+                <div class="col-md-12 solid-black">
+                    <h1 id="game-title">BlackJack</h1>
+                </div>
+            </div>
+        </div> -->
         <div class="container">           
             <div class="row top-row">
                 <div class="col-md-12 solid-black">
                     <h1 id="game-title">BlackJack</h1>
                 </div>
             </div>
+            <div class="row justify-content-between solid-black menu ">
+                <div class="col-sm-2 solid-black">
+                    <h2 id="home">Home</h2>
+                </div>
+
+                <div class="col-sm-2 solid-black">
+                    <h2 id="menu">Menu</h2>
+                </div>                    
+            </div>
             <div class="row row-content">
-                <!-- <div class="col-sm-2 solid-black">left col</div> -->
+
                 <div class="col-sm-12 solid-black" >
                     <div id="dealer-total">
                         <h3 class="text">Dealer: </h3>
@@ -49,9 +65,27 @@
                     <!-- <button type="button" class="col-md-2 btn btn-primary">
                     hit
                     </button> -->
-                    <button type="button" id="chips">
-                        <img id="dollars" src="img/chips/100_d.png" />
-                    </button>
+                    <div class="chips">
+                        <button type="button" id="chips" class="chips">
+                            <img id="dollars" src="img/chips/5_d.png" />
+                        </button>
+                        <button type="button" id="chips1" class="chips">
+                            <img id="dollars" src="img/chips/25_d.png" />
+                        </button>
+                        <button type="button" id="chips2" class="chips">
+                            <img id="dollars" src="img/chips/50_d.png" />
+                        </button>
+                        <button type="button" id="chips3" class="chips">
+                            <img id="dollars" src="img/chips/100_d.png" />
+                        </button>
+                        <button type="button" id="chips4" class="chips">
+                            <img id="dollars" src="img/chips/500_d.png" />
+                        </button>
+                        <button type="button" id="chips5" class="chips">
+                            <img id="dollars" src="img/chips/1000_d.png" />
+                        </button>
+                    </div>
+                    
                     <button type="button" class="btn btn-secondary" id="hit-btn">
                         Hit
                     </button>

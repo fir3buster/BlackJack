@@ -1,5 +1,6 @@
 body {
-    /* background-color: lightgray; */
+    background-image: url(img/background5.jpg);
+    background-size: cover;
     display: flex;
     text-align: center;
     justify-content: center;
@@ -26,11 +27,18 @@ body {
 
 .row.top-row {
     /* height: 100px; */
-    /* background-color: lightsalmon */
+    background-image: url(img/background5.jpg);
+    /* background-size: contain; */
 }
+
 
 #game-title {
     color: rgba(56, 196, 110, 0.811);
+}
+
+.menu h2{
+    color: rgba(56, 196, 110, 0.59);
+    font-size: 25px;
 }
 
 #grid-container {
@@ -61,6 +69,11 @@ body {
 
 #money-bet h3 {
     display: inline-block;
+}
+
+h3 {
+    color: whitesmoke;
+    font-size: 20px; 
 }
 #deck-dealer {
     /* grid-area: 3/1/8/10; */
@@ -94,7 +107,7 @@ body {
     border-radius: 75%;
 } */
 
-#chips {
+.chips {
     display: flex;
     justify-content: center;
     border: none;
