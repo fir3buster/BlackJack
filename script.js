@@ -1,88 +1,3 @@
-// Planning - Due 19 Feb 24
-// You will share:
-//  ☐ Your choice of game.
-//  ☐ A wireframe of your "main" game screen.
-//  ☐ Pseudocode for the overall game play.
-
-// PseudoCode Prelim
-/*
-
-----------------------------------------------------------------------------------------------------------------------
-Variables
-1. Total points/ sum of the dealer => int
-2. Total points/ sum of the player => int
-3. Calculate the Ace of the dealer => int
-4. Calculate the Ace of the player => int
-5. hidden card => string
-6. the deck/ rest of the cards => array
-7. boolean to allow player to draw a new card if the total points is less than 21
-8. money bet => int
-9. total money/bankroll => int
-
-*Advanced
-10. calculate the number of cards that each dealer and player has
-
-----------------------------------------------------------------------------------------------------------------------
-
-Function
-1. Build the deck 
-    a. Create an array to list out all the values
-    b. Create an array to list out all the suits
-    c. Initialize an empty array for the deck
-    d. Append all the cards into deck array.
-        i) currently only set to 1 deck
-
-2. Shuffle the deck
-    a. loop through the deck array
-        i) assign a variable with random index between 0 to 51
-        ii) swap the random index with the index i from the loop
-
-3.  start the game
-    a. create place the bet function
-    b. get the total points of the dealer
-        i) create a function to get the value of the card. including the hidden card
-            - append the cards using DOM to show on the web
-    c. get the total points of the player
-        i) create a function to get the value of the card.
-            - append the cards using DOM to show on the web
-    d. calculate the ace of the dealer
-        i) create a function to check the number of ace a dealer has in a round.
-    7. calculate the ace of the player
-        i) create a function to check the number of ace a dealer has in a round.
-    8. check for player action
-        i) create a function to check if the player's going to hit or stand
-            - if hit , 
-                i) then get the value of the card and append
-                ii) check and calculate the ace of the player
-                iii) create another function to reduce the ACE 
-                    - if " the total points of player is more than 21 and number of ace is more than 0"
-                            total points minus 10;
-                            number of ace minus 1;
-            - else if stand, 
-                return;
-    9. reveal the hidden card
-    10. reveal the results according to game play.
-
-4. game play logic (the rules)
-    a. if player is busted  or (*blackjack with only 2 cards)
-        i) dealer reveals the hidden card and do not require to satisfy "sum > 17 condition"
-        
-    b. else;
-        1. when the total points of the dealer is less than 17 (or soft 17 => A + 6)  (use a while loop)
-            i) append a card until the sum is more than or equal to 17
-            ii) check and calculate the ace of the player
-            iii) create another function to reduce the ACE 
-                - if " the total points of player is more than 21 and number of ace is more than 0"
-                        total points minus 10;
-                        number of ace minus 1;
-    c. reset variables 1 to 8, update 9.
-
-
-5. Stretch goals
-    // split, double down, insurance
-*/
-//-------------------------------------------------------------------------------------------------------------------
-
 // Declaring the variables
 // 1. Total points/ sum of the dealer => int
 let totalPointsDealer = 0;
@@ -101,8 +16,15 @@ let canDrawCard = true;
 // 8. money bet => int
 let moneyBet = 0;
 // 9. total money/bankroll => int
-let bankroll = 2000;
-// // 11. cardindex
+let bankroll = 1000;
+// 10. count the number of cards dealer & player have
+let dealerCardCount = 0;
+let playerCardCount = 0;
+// 11. boolean if player wins
+let playerWin = false;
+// 1. boolean if player has blackjack
+let playerBlackJack = false;
+
 
 /*
 Function
@@ -115,22 +37,21 @@ Function
 */
 
 function buildDeck() {
-    // const values = [
-    //     "A",
-    //     "2",
-    //     "3",
-    //     "4",
-    //     "5",
-    //     "6",
-    //     "7",
-    //     "8",
-    //     "9",
-    //     "10",
-    //     "J",
-    //     "Q",
-    //     "K",
-    // ];
-    const values = ["A", "3", "10", "J"];
+    const values = [
+        "A",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K",
+    ];
     // S = Spades, H = Heart, C = Club, D = Diamond
     const suits = ["S", "H", "C", "D"];
 
@@ -157,7 +78,6 @@ function shuffleDeck() {
         deckOfCard[i] = deckOfCard[randomIndex];
         deckOfCard[randomIndex] = temp;
     }
-    console.log(deckOfCard);
 }
 
 /*
@@ -195,20 +115,26 @@ function startGame() {
     // event listener
     document.querySelector("#hit-btn").addEventListener("click", hitAction);
     document.querySelector("#stand-btn").addEventListener("click", standAction);
-    // document.querySelector("#deal").addEventListener("click", dealAction);
 }
 
 function pointsOfDealer(initial = true) {
     if (initial) {
-        document.querySelector("#hidden").style.visibility = "visible";
+        // document.querySelector("#hidden").style.visibility = "visible";
         const initialCard = deckOfCard.pop();
-        console.log(`DEALER INITIAL CARD: ${initialCard}`);
         const cardValue = transformStringToNumber(initialCard[0]);
         totalPointsDealer += cardValue;
         calAceDealer += checkNumAce(initialCard[0]);
+        dealerCardCount += 1;
         document.querySelector("#points-dealer").innerHTML = totalPointsDealer;
-        document.querySelector("#dealer-total").style.visibility = "visible";
-        createCardDOM(initialCard, "#deck-dealer");
+
+        setTimeout(function () {
+            createCardDOM(initialCard, ".deck-dealer");
+        }, 1000);
+
+        setTimeout(function () {
+            document.querySelector(".dealer-total").style.visibility =
+                "visible";
+        }, 2000);
 
         getHiddenCard();
         // HAVE TO CHECK FOR DOUBLE ACE AT INITIAL
@@ -216,80 +142,107 @@ function pointsOfDealer(initial = true) {
             convertAceDealer();
         }
     }
-    console.log(totalPointsDealer);
 }
 
 function pointsOfPlayer(initial = true) {
     if (initial) {
+        let cardInterval = 500;
         for (i = 0; i < 2; i++) {
             const initialCard = deckOfCard.pop();
-            // console.log(`PLAYER INITIAL CARD: ${initialCard}`);
             const cardValue = transformStringToNumber(initialCard[0]);
             totalPointsPlayer += cardValue;
             calAcePlayer += checkNumAce(initialCard[0]); // use initialCard[0]
-            console.log(`INITIAL PLAYER ACE COUNT: ${calAcePlayer}`);
+            playerCardCount += 1;
             document.querySelector("#points-player").innerHTML =
                 totalPointsPlayer;
-            createCardDOM(initialCard, "#deck-player");
+            setTimeout(function () {
+                createCardDOM(initialCard, ".deck-player");
+            }, cardInterval);
+            cardInterval += 1000;
         }
-        document.querySelector("#player-total").style.visibility = "visible";
+        setTimeout(function () {
+            document.querySelector(".player-total").style.visibility =
+                "visible";
+        }, 2500);
 
-        if (totalPointsPlayer === 21) {
-            // canDrawCard = false;
-            document.querySelector("#hit-btn").style.visibility = "hidden";
-            document.querySelector("#stand-btn").style.visibility = "hidden";
+        if (totalPointsPlayer === 21 && playerCardCount === 2) {
+            setTimeout(function () {
+                document.querySelector("#hit-btn").style.visibility = "hidden";
+                document.querySelector("#stand-btn").style.visibility =
+                    "hidden";
+                displayResult("BlackJack!", "#blackjack-player");
+            }, 3000);
+
             const timeout = setTimeout(function () {
                 revealHiddenCardDOM(hiddenCard, "#hidden");
             }, 1000);
 
-            // const timeout = setTimeout(function (dealerDrawCard) {
-            //     revealHiddenCardDOM(hiddenCard, "#hidden");
-            //     // setTimeout(dealerDrawCard(), 1000);
-            //     dealerDrawCard();
-            // }, 3000);
-            // //Dealer to draw card if point is below 17
-            // setTimeout(dealerDrawCard(), 3000);
+            if (totalPointsDealer === 21 && dealerCardCount === 2) {
+                setTimeout(function () {
+                    displayResult("BlackJack!", "#blackjack-dealer");
+                }, 3000);
+                setTimeout(function () {
+                    displayResult("PUSH!");
+                }, 3500);
+            } else {
+                playerBlackJack = true;
+                setTimeout(function () {
+                    displayResult("PLAYER WINS!", "#winner");
+                }, 3500);
+            }
+
+            setTimeout(function () {
+                shuffle();
+                reset();
+            }, 5000);
         }
 
         if (totalPointsPlayer === 22) {
             convertAcePlayer();
         }
     }
-    console.log(totalPointsPlayer);
 }
 
 function hitAction() {
-    // if (!canDrawCard) {
-    //     return;
-    // }
-
     const getCard = deckOfCard.pop();
     const cardValue = transformStringToNumber(getCard[0]);
     totalPointsPlayer += cardValue;
     calAcePlayer += checkNumAce(getCard[0]);
-    createCardDOM(getCard, "#deck-player");
+    createCardDOM(getCard, ".deck-player");
+    playerCardCount += 1;
     convertAcePlayer();
-    document.querySelector("#points-player").innerHTML = totalPointsPlayer;
+    setTimeout(function () {
+        document.querySelector("#points-player").innerHTML = totalPointsPlayer;
+    }, 500);
 
-    // check for ACE COUNT
-    console.log(`HIT ACE COUNT: ${calAcePlayer}`);
-    console.log(`CHECK FOR PLAYER's POINT: ${totalPointsPlayer}`);
     if (totalPointsPlayer > 20) {
-        // canDrawCard = false;
         document.querySelector("#hit-btn").style.visibility = "hidden";
         document.querySelector("#stand-btn").style.visibility = "hidden";
         const timeout = setTimeout(function () {
             revealHiddenCardDOM(hiddenCard, "#hidden");
-        }, 1000);
+        }, 100);
 
-        //RETURN MESSAGE YOU BUST!
-        // Dealer to draw card if point is below 17
-        dealerDrawCard();
+        if (pointsOfDealer === 21 && dealerCardCount === 2) {
+
+            setTimeout(function () {
+                displayResult("BlackJack!", "#blackjack-dealer");
+            }, 2000);
+        }
+
+        setTimeout(function () {
+            displayResult("BUST!", "#bust-player");
+            displayResult("DEALER WINS!", "#win-dealer");
+        }, 3000);
+
+        setTimeout(function () {
+            shuffle();
+            reset();
+        }, 5000);
     }
 }
 
 function standAction() {
-    totalPointsPlayer = convertAcePlayer();
+    convertAcePlayer();
     document.querySelector("#hit-btn").style.visibility = "hidden";
     document.querySelector("#stand-btn").style.visibility = "hidden";
 
@@ -298,73 +251,201 @@ function standAction() {
 
     const timeout = setTimeout(function () {
         revealHiddenCardDOM(hiddenCard, "#hidden");
-    }, 1000);
+    }, 100);
 
     dealerDrawCard();
-
-    // RESULTS of who wins if-else statement
 }
 
 function placeYourBet() {
     // check if bankroll < value, hide the chips
-    document.querySelector("#chips").addEventListener("click", function () {
-        totalBet(5);
-    });
+    document.querySelector("#place-bet").style.visibility = "visible";
+    document.querySelector("#total-bet").style.visibility = "visible";
+    document.querySelector("#bankroll").innerHTML = "$" + bankroll;
     document.querySelector("#chips1").addEventListener("click", function () {
-        totalBet(25);
+        if (bankroll < 25) {
+            return;
+        }
+        createChipsAtBetsButton(25, "#hidden-chip1");
     });
     document.querySelector("#chips2").addEventListener("click", function () {
-        totalBet(50);
+        if (bankroll < 50) {
+            return;
+        }
+        createChipsAtBetsButton(50, "#hidden-chip2");
     });
     document.querySelector("#chips3").addEventListener("click", function () {
-        totalBet(100);
+        if (bankroll < 100) {
+            return;
+        }
+        createChipsAtBetsButton(100, "#hidden-chip3");
     });
     document.querySelector("#chips4").addEventListener("click", function () {
-        totalBet(500);
+        if (bankroll < 500) {
+            return;
+        }
+        createChipsAtBetsButton(500, "#hidden-chip4");
     });
-    document.querySelector("#chips5").addEventListener("click", function () {
-        totalBet(1000);
-    });
+
+    document
+        .querySelector("#reset-bets-btn")
+        .addEventListener("click", function () {
+            document.querySelector("#deal-hide-btn").style.visibility =
+                "hidden";
+            document.querySelector("#reset-bets-btn").style.visibility =
+                "hidden";
+            document
+                .querySelectorAll(".hidden-chip")
+                .forEach((e) => (e.style.visibility = "hidden"));
+            bankroll += moneyBet;
+            moneyBet = 0;
+            document.querySelector("#bankroll").innerHTML = "$" + bankroll;
+            document.querySelector("#total-bet").innerHTML = "$" + moneyBet;
+        });
+}
+
+function createChipsAtBetsButton(value, element) {
+    totalBet(value);
+    document
+        .querySelectorAll(".hidden-chip")
+        .forEach((e) => (e.style.visibility = "hidden"));
+    document.querySelector(element).style.visibility = "visible";
 }
 
 function totalBet(value) {
-    if (bankroll < value) {
-        console.log("You have not enough chips!");
-        return;
-    }
-
     moneyBet += value;
-    console.log(moneyBet);
-    document.querySelector("#total-bet").innerHTML = moneyBet;
+    bankroll -= value;
+    document.querySelector("#total-bet").innerHTML = "$" + moneyBet;
     document.querySelector("#deal-hide-btn").style.visibility = "visible";
+    document.querySelector("#bankroll").innerHTML = "$" + bankroll;
+    document.querySelector("#reset-bets-btn").style.visibility = "visible";
 }
 
 function revealPlayerButtons() {
     if (moneyBet === 0) {
         document.querySelector("#deal-hide-btn").style.visibility = "hidden";
+        document.querySelector("#reset-bets-btn").style.visibility = "hidden";
     }
+
     document
         .querySelector("#deal-hide-btn")
         .addEventListener("click", function () {
-            document.querySelector("#hit-btn").style.visibility = "visible";
-            document.querySelector("#stand-btn").style.visibility = "visible";
+            document.querySelector("#place-bet").style.visibility = "hidden";
+            setTimeout(function () {
+                document.querySelector("#hit-btn").style.visibility = "visible";
+                document.querySelector("#stand-btn").style.visibility =
+                    "visible";
+            }, 2400);
+
             document.querySelector("#deal-hide-btn").style.visibility =
+                "hidden";
+            document.querySelector("#reset-bets-btn").style.visibility =
                 "hidden";
             document
                 .querySelectorAll(".chips")
-                .forEach((e) => (e.disabled = true)); // TAKE NOTE ON RESET
+                .forEach((e) => e.removeAttribute("disabled")); // TAKE NOTE ON RESET
             startGame();
         });
+}
+
+function results() {
+    if (totalPointsDealer === 21 && dealerCardCount === 2) {
+        displayResult("BlackJack!", "#blackjack-dealer");
+        setTimeout(function () {
+            displayResult("DEALER WINS!", "#win-dealer");
+        }, 2000);
+    }
+
+    if (totalPointsPlayer <= 21) {
+        if (totalPointsPlayer === totalPointsDealer) {
+            displayResult("PUSH!");
+        } else if (totalPointsPlayer > totalPointsDealer) {
+            playerWin = true;
+            displayResult("PLAYER WINS!", "#win-player");
+        } else if (
+            totalPointsPlayer < totalPointsDealer &&
+            totalPointsDealer <= 21
+        ) {
+            displayResult("DEALER WINS!", "#win-dealer");
+        } else if (
+            totalPointsPlayer < totalPointsDealer &&
+            totalPointsDealer > 21
+        ) {
+            displayResult("BUST!", "#bust-dealer");
+            playerWin = true;
+            displayResult("PLAYER WINS!", "#win-player");
+        }
+    }
+
+    setTimeout(function () {
+        shuffle();
+        reset();
+    }, 5000);
+}
+
+function reset() {
+    if (!playerWin) {
+    } else if (playerBlackJack) {
+        bankroll += Math.round(moneyBet * 2.5);
+    } else {
+        bankroll += moneyBet * 2;
+    }
+
+    totalPointsDealer = 0;
+    totalPointsPlayer = 0;
+    calAceDealer = 0;
+    calAcePlayer = 0;
+    hiddenCard = "";
+    deckOfCard.length = 0;
+    canDrawCard = true;
+    moneyBet = 0;
+    dealerCardCount = 0;
+    playerCardCount = 0;
+    playerWin = false;
+    playerBlackJack = false;
+
+    // Clear the DOM elements
+    document.querySelector("#hidden").style.visibility = "hidden";
+    document.querySelector("#points-dealer").innerHTML = "0";
+    document.querySelector(".dealer-total").style.visibility = "hidden";
+    document.querySelector("#points-player").innerHTML = "0";
+    document.querySelector(".player-total").style.visibility = "hidden";
+    document.querySelector("#hit-btn").style.visibility = "hidden";
+    document.querySelector("#stand-btn").style.visibility = "hidden";
+    document.querySelector("#bust-player").style.visibility = "hidden";
+    document.querySelector("#blackjack-player").style.visibility = "hidden";
+    document.querySelector("#blackjack-dealer").style.visibility = "hidden";
+    document.querySelector("#total-bet").style.visibility = "hidden";
+    document.querySelector("#winner").innerHTML = "";
+    document.querySelector("#win-player").innerHTML = "";
+    document.querySelector("#win-dealer").innerHTML = "";
+    document.querySelector("#bust-dealer").innerHTML = "";
+    document.querySelector(".deck-dealer").innerHTML = "";
+    document.querySelector(".deck-player").innerHTML = "";
+    const createHiddenCard = document.createElement("img");
+    document.querySelector(".deck-dealer").appendChild(createHiddenCard);
+    createHiddenCard.setAttribute("id", "hidden");
+    createHiddenCard.setAttribute("src", "img/deck/Back.png");
+
+    document.querySelector("#deal-hide-btn").style.visibility = "hidden";
+    document.querySelector("#reset-bets-btn").style.visibility = "hidden";
+    document
+        .querySelectorAll(".hidden-chip")
+        .forEach((e) => (e.style.visibility = "hidden"));
+    document.querySelector("#bankroll").innerHTML = "$" + bankroll;
+    document.querySelector("#total-bet").innerHTML = "$" + moneyBet;
+    document.querySelectorAll(".chips").forEach((e) => (e.disabled = false));
+
+    setTimeout(function () {
+        buildDeck();
+        shuffleDeck();
+        placeYourBet();
+        revealPlayerButtons();
+    }, 2000);
 }
 //--------------------------------------------------------------------------------------------
 
 // GENERIC function
 function transformStringToNumber(value) {
-    // console.log(
-    //     `CHECK FOR NON VALUE in TRANSFORMING STRING: ${value}, ${typeof value}`
-    // );
-    console.log(isNaN(value));
-
     if (isNaN(value)) {
         if (value !== "A") {
             return 10;
@@ -373,27 +454,30 @@ function transformStringToNumber(value) {
     } else if (!isNaN(value) && Number(value) === 1) {
         return 10;
     }
-
     return Number(value);
 }
 
 // a function to create and append card using DOM to display on the web
 function createCardDOM(card, element) {
-    const imgPath = `img\\deck\\${card}.png`; // PATH.JOIN (ISSUE WITH DEPLOYMENT)
+    const imgPath = `img\\deck\\${card}.png`;
+    // const imgPath = path.join('img', 'deck', `${card}.png`); // does not work. probably environment setting issue with node.js
     const createCard = document.createElement("img");
     document.querySelector(element).appendChild(createCard);
     createCard.classList.add("img");
     createCard.setAttribute("src", imgPath);
+    //flyInEffect;
+    setTimeout(function () {
+        createCard.style.transition = "transform 1.0s ease-in-out";
+        createCard.style.transform = "translate(0, 0)";
+    }, 100);
 }
 
 function revealHiddenCardDOM(card, element) {
-    const imgPath = `img\\deck\\${card}.png`; // PATH.JOIN (ISSUE WITH DEPLOYMENT)
-    console.log(document.querySelector(element).src);
+    const imgPath = `img\\deck\\${card}.png`;
     document.querySelector(element).src = imgPath;
     document.querySelector("#points-dealer").innerHTML = totalPointsDealer;
 }
 
-// i) create a function to check the number of ace in a round.
 function checkNumAce(value) {
     if (value !== "A") {
         return 0;
@@ -406,6 +490,12 @@ function getHiddenCard() {
     const hiddenCardValue = transformStringToNumber(hiddenCard[0]);
     totalPointsDealer += hiddenCardValue;
     calAceDealer += checkNumAce(hiddenCard[0]);
+    dealerCardCount += 1;
+    setTimeout(function () {
+        document.querySelector("#hidden").style.transition =
+            "transform 0.5s ease-in-out";
+        document.querySelector("#hidden").style.transform = "translate(0, 0)";
+    }, 100);
 }
 
 // convert the value of ACE from 11 to 1 if the total value of cards is more than 21
@@ -414,9 +504,6 @@ function convertAceDealer() {
         totalPointsDealer -= 10;
         calAceDealer -= 1;
     }
-    console.log(
-        `CHECK FOR POINT IN CONVERTACE FUNCTION: ${totalPointsDealer} AND ACE TOTAL: ${calAceDealer}`
-    );
 }
 
 function convertAcePlayer() {
@@ -424,24 +511,10 @@ function convertAcePlayer() {
         totalPointsPlayer -= 10;
         calAcePlayer -= 1;
     }
-    console.log(
-        `CHECK FOR POINT IN CONVERTACE FUNCTION: ${totalPointsPlayer} AND ACE TOTAL: ${calAcePlayer}`
-    );
 }
 
-// function dealerDrawCard() {
-//     while (totalPointsDealer < 17) {
-//         const getCard = deckOfCard.pop();
-//         const cardValue = transformStringToNumber(getCard[0]);
-//         totalPointsDealer += cardValue;
-//         calAceDealer += checkNumAce(getCard[0]);
-//         createCardDOM(getCard, "#deck-dealer");
-//         convertAceDealer();
-//     }
-// }
-
 function dealerDrawCard() {
-    const drawInterval = 1500;
+    const drawInterval = 500;
 
     function drawNextCard() {
         if (totalPointsDealer < 17) {
@@ -450,27 +523,52 @@ function dealerDrawCard() {
                 const cardValue = transformStringToNumber(getCard[0]);
                 totalPointsDealer += cardValue;
                 calAceDealer += checkNumAce(getCard[0]);
-                createCardDOM(getCard, "#deck-dealer");
+                createCardDOM(getCard, ".deck-dealer");
+                dealerCardCount += 1;
                 convertAceDealer();
-                document.querySelector("#points-dealer").innerHTML =
-                    totalPointsDealer;
-                // Recursively call drawNextCard after the delay
+                setTimeout(() => {
+                    document.querySelector("#points-dealer").innerHTML =
+                        totalPointsDealer;
+                }, 750);
                 drawNextCard();
             }, drawInterval);
         }
     }
 
     drawNextCard();
+
+    setTimeout(function () {
+        results();
+    }, 3000);
+}
+
+function displayResult(text, element = "#winner") {
+    const resultElement = document.querySelector(element);
+    resultElement.innerHTML = text;
+    resultElement.classList.add("fadeIn");
+    resultElement.classList.add("hold");
+    setTimeout(function () {
+        resultElement.classList.remove("fadeIn");
+    }, 5000);
+}
+
+function shuffle(element = "#shuffle") {
+    const shuffleElement = document.querySelector(element);
+    shuffleElement.innerHTML = "Shuffling...";
+    shuffleElement.classList.add("fadeIn");
+    shuffleElement.classList.add("hold");
+    setTimeout(function () {
+        shuffleElement.classList.remove("fadeIn");
+    }, 5000);
 }
 
 //--------------------------------------------------------------------------------------------
 
-buildDeck();
-shuffleDeck();
-placeYourBet();
-revealPlayerButtons();
+function main() {
+    buildDeck();
+    shuffleDeck();
+    placeYourBet();
+    revealPlayerButtons();
+}
 
-// let num = 123;
-// console.log(typeof num);
-// num += 100;
-// console.log(num);
+main();

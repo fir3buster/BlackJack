@@ -1,119 +1,239 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
-    background-image: url(img/background5.jpg);
+    background-image: url(img/background3.jpg);
     background-size: cover;
-    display: flex;
     text-align: center;
     justify-content: center;
     align-items: center;
-    /* height: 100%; */
 }
 
 .container {
-    background-image: url(img/background.jpg);
-    background-size: cover;
-    border: 2px solid black;
-    /* background-color: green; */
-    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    min-height: 300px;
     min-width: 650px;
-    height: 50%;
-    width: 50%;
-
-    /* display: flex */
+    height: 625px;
+    width: 850px;
 }
 
-.solid-black {
-    border: 1px solid black;
+.top-sub-container {
+    background-color: inherit;
 }
-
-.row.top-row {
-    /* height: 100px; */
-    background-image: url(img/background5.jpg);
-    /* background-size: contain; */
-}
-
 
 #game-title {
-    color: rgba(56, 196, 110, 0.811);
+    color: rgb(246, 246, 246);
+    font-weight: bold;
+    font-style: oblique;
 }
 
-.menu h2{
-    color: rgba(56, 196, 110, 0.59);
-    font-size: 25px;
+.btm-sub-container {
+    background-image: url(img/background.jpg);
+    background-size: cover;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(14, 0.5fr);
+    height: 550px;
+    width: 100%;
 }
 
-#grid-container {
-    /* height: 85%; */
-    /* background-color: lightgreen; */
-    /* display: grid; */
-    /* grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: repeat(7, 1fr); */
-}
-
-#dealer-total {
-    visibility: hidden;
-}
-
-#dealer-total .text {
-    display: inline-block;
-    /* grid-area: 1/1/3/5; */
-}
-
-#player-total {
-    visibility: hidden;
-}
-
-#player-total .text {
-    display: inline-block;
-    /* grid-area: 1/5/3/10; */
-}
-
-#money-bet h3 {
-    display: inline-block;
-}
-
-h3 {
-    color: whitesmoke;
-    font-size: 20px; 
-}
-#deck-dealer {
-    /* grid-area: 3/1/8/10; */
-    /* display: flex; */
-}
-
-#deck-player {
-    /* grid-area: 3/1/8/10; */
-    /* display: flex; */
-}
-
-#hidden {
-    visibility: hidden;
-}
-
-#deck-dealer img {
-    width: 10%;
-    height: 10%;
-    margin: 1% -1.75%;
-}
-
-#deck-player img {
-    width: 10%;
-    height: 10%;
-    margin: 1% -1.75%;
-}
-
-/* .btn.btn-primary {
-    grid-area: 8/1/10/10;
-    color: black;
-    border-radius: 75%;
-} */
-
-.chips {
+.menu {
+    grid-area: 1/9/3/11;
     display: flex;
     justify-content: center;
-    border: none;
-    /* cursor: pointer; */
-    /* appearance: none; */
+}
+
+#menu {
+    font-size: 25px;
+    color: rgb(17, 179, 17);
+}
+
+.dealer-total {
+    grid-area: 3/8/6/10;
+    visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dealer-total .text {
+    color: rgb(17, 179, 17);
+    display: inline-block;
+    margin: auto 3%;
+}
+
+.dealer-total .text-score {
+    color: white;
+    font-size: 40px;
+    display: inline-block;
+    margin: auto 3%;
+}
+
+#points-dealer {
+    background-color: rgba(128, 128, 128, 0.567);
+    padding: 0 10%;
+    border-radius: 80%;
+}
+
+.player-total {
+    grid-area: 10/8/13/10;
+    visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.player-total .text {
+    color: rgb(17, 179, 17);
+    display: inline-block;
+    margin: auto 3%;
+}
+
+.player-total .text-score {
+    color: white;
+    font-size: 40px;
+    display: inline-block;
+    margin: auto 3%;
+}
+
+#points-player {
+    background-color: rgba(128, 128, 128, 0.567);
+    padding: 0 10%;
+    border-radius: 80%;
+}
+
+/* row start/ col start/ row end/ col end */
+.money-bet {
+    grid-area: 6/4/10/8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.total-bet {
+    color: whitesmoke;
+    font-size: 25px;
+    position: absolute;
+    left: 170px;
+}
+
+#hidden-chip1 {
+    z-index: 1;
+    position: absolute;
     background-color: inherit;
+    border: none;
+    visibility: hidden;
+    left: 80px;
+}
+
+#hidden-chip2 {
+    z-index: 1;
+    position: absolute;
+    background-color: inherit;
+    border: none;
+    visibility: hidden;
+    left: 80px;
+}
+
+#hidden-chip3 {
+    z-index: 1;
+    position: absolute;
+    background-color: inherit;
+    border: none;
+    visibility: hidden;
+    left: 80px;
+}
+
+#hidden-chip4 {
+    z-index: 1;
+    position: absolute;
+    background-color: inherit;
+    border: none;
+    visibility: hidden;
+    left: 80px;
+}
+
+.deck-dealer {
+    grid-area: 2/3/7/9;
+    display: flex;
+    justify-content: center;
+    align-items: top;
+}
+
+.deck-player {
+    grid-area: 9/3/14/9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.deck-dealer img {
+    width: 23%;
+    height: 85%;
+    margin: 2% -6%;
+    transform: translate(-1000px, -1000px);
+}
+
+.deck-player img {
+    width: 23%;
+    height: 85%;
+    margin: 6% -6%;
+    transform: translate(-1000px, -1000px);
+}
+
+.all-chips {
+    grid-area: 9/1/15/5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+#chips1 {
+    position: absolute;
+    background-color: inherit;
+    border: none;
+    cursor: pointer;
+    top: -10px;
+    left: 25px;
+}
+
+#chips2 {
+    position: absolute;
+    background-color: inherit;
+    border: none;
+    cursor: pointer;
+    top: 50px;
+    left: 50px;
+}
+
+#chips3 {
+    position: absolute;
+    background-color: inherit;
+    border: none;
+    cursor: pointer;
+    top: 100px;
+    left: 90px;
+}
+
+#chips4 {
+    position: absolute;
+    background-color: inherit;
+    border: none;
+    cursor: pointer;
+    top: 145px;
+    left: 145px;
+}
+
+#bankroll {
+    position: absolute;
+    top: 70px;
+    left: 175px;
+    color: whitesmoke;
+    font-size: 25px;
 }
 
 #dollars {
@@ -121,23 +241,218 @@ h3 {
     width: 75px;
 }
 
+.hit-btn {
+    grid-area: 6/2/10/5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 #hit-btn {
-    /* grid-area: 8/1/10/5; */
-    color: black;
-    border-radius: 75%;
+    color: whitesmoke;
+    border-radius: 10%;
     visibility: hidden;
+    padding: 15px 20px;
+    font-size: 25px;
+    position: absolute;
+}
+
+.stand-btn {
+    grid-area: 6/7/10/10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #stand-btn {
-    /* grid-area: 8/5/10/10; */
-    color: black;
-    border-radius: 75%;
+    color: whitesmoke;
+    border-radius: 10%;
     visibility: hidden;
+    padding: 15px 20px;
+    font-size: 25px;
+}
+
+.deal-btn {
+    grid-area: 5/2/10/5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #deal-hide-btn {
-    /* grid-area: 8/5/10/10; */
-    color: black;
-    border-radius: 75%;
+    color: whitesmoke;
+    border-radius: 10%;
     visibility: hidden;
+    padding: 10px 20px;
+    font-size: 25px;
+}
+
+.reset-bets-btn {
+    grid-area: 5/1/10/3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#reset-bets-btn {
+    color: whitesmoke;
+    border-radius: 10%;
+    visibility: hidden;
+    padding: 10px 20px;
+    font-size: 25px;
+}
+
+.results {
+    grid-area: 2/4/14/8;
+    display: grid;
+    grid-template-rows: repeat(5, 1fr);
+    z-index: 2;
+}
+
+.result-dealer {
+    grid-area: 1/1/3/2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.result-player {
+    grid-area: 4/1/6/2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#blackjack-dealer {
+    position: absolute;
+    background-color: rgb(255, 72, 0);
+    color: white;
+    opacity: 0;
+    font-size: 40px;
+    padding: 0 50px;
+}
+
+#blackjack-player {
+    position: absolute;
+    background-color: rgb(255, 72, 0);
+    color: white;
+    opacity: 0;
+    font-size: 40px;
+    padding: 0 50px;
+}
+
+#bust-dealer {
+    position: absolute;
+    background-color: black;
+    color: white;
+    opacity: 0;
+    font-size: 40px;
+    padding: 0 50px;
+}
+
+#bust-player {
+    position: absolute;
+    background-color: black;
+    color: white;
+    opacity: 0;
+    font-size: 40px;
+    padding: 0 50px;
+}
+
+#win-dealer {
+    position: absolute;
+    background-color: rgb(255, 3, 3);
+    color: white;
+    opacity: 0;
+    font-size: 40px;
+    padding: 0 50px;
+}
+
+#win-player {
+    position: absolute;
+    background-color: rgb(255, 3, 3);
+    color: white;
+    opacity: 0;
+    font-size: 40px;
+    padding: 0 50px;
+}
+
+.winner {
+    grid-area: 2/1/5/2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+#winner {
+    position: absolute;
+    background-color: rgba(6, 109, 85, 0.993);
+    color: white;
+    opacity: 0;
+    font-size: 40px;
+    padding: 0 50px;
+}
+
+.place-bet {
+    grid-area: 2/3/5/9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#place-bet {
+    position: absolute;
+    background-color: inherit;
+    color: white;
+    font-size: 40px;
+    padding: 0 50px;
+    visibility: hidden;
+}
+
+.shuffle {
+    grid-area: 6/5/10/7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+#shuffle {
+    position: absolute;
+    background-color: inherit;
+    color: white;
+    opacity: 0;
+    font-size: 50px;
+    padding: 0 50px;
+}
+
+/* fade-in and fade-out */
+@-webkit-keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.fadeIn {
+    -webkit-animation: fadeIn;
+    animation: fadeIn;
+    opacity: 1;
+}
+
+.hold {
+    -webkit-animation-duration: 2s;
+    animation-duration: 2s;
 }
