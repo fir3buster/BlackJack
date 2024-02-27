@@ -25,7 +25,6 @@ let playerWin = false;
 // 1. boolean if player has blackjack
 let playerBlackJack = false;
 
-
 /*
 Function
 1. Build the deck 
@@ -125,7 +124,7 @@ function pointsOfDealer(initial = true) {
         totalPointsDealer += cardValue;
         calAceDealer += checkNumAce(initialCard[0]);
         dealerCardCount += 1;
-        document.querySelector("#points-dealer").innerHTML = totalPointsDealer;
+        document.querySelector("#points-dealer").innerText = totalPointsDealer;
 
         setTimeout(function () {
             createCardDOM(initialCard, ".deck-dealer");
@@ -153,7 +152,7 @@ function pointsOfPlayer(initial = true) {
             totalPointsPlayer += cardValue;
             calAcePlayer += checkNumAce(initialCard[0]); // use initialCard[0]
             playerCardCount += 1;
-            document.querySelector("#points-player").innerHTML =
+            document.querySelector("#points-player").innerText =
                 totalPointsPlayer;
             setTimeout(function () {
                 createCardDOM(initialCard, ".deck-player");
@@ -191,10 +190,10 @@ function pointsOfPlayer(initial = true) {
                 }, 3500);
             }
 
-            setTimeout(function () {
-                shuffle();
-                reset();
-            }, 5000);
+            // setTimeout(function () {
+            //     shuffle();
+            //     reset();
+            // }, 5000);
         }
 
         if (totalPointsPlayer === 22) {
@@ -212,32 +211,25 @@ function hitAction() {
     playerCardCount += 1;
     convertAcePlayer();
     setTimeout(function () {
-        document.querySelector("#points-player").innerHTML = totalPointsPlayer;
+        document.querySelector("#points-player").innerText = totalPointsPlayer;
     }, 500);
 
-    if (totalPointsPlayer > 20) {
+    if (totalPointsPlayer > 21) {
         document.querySelector("#hit-btn").style.visibility = "hidden";
         document.querySelector("#stand-btn").style.visibility = "hidden";
         const timeout = setTimeout(function () {
             revealHiddenCardDOM(hiddenCard, "#hidden");
         }, 100);
 
-        if (pointsOfDealer === 21 && dealerCardCount === 2) {
-
-            setTimeout(function () {
-                displayResult("BlackJack!", "#blackjack-dealer");
-            }, 2000);
-        }
-
         setTimeout(function () {
             displayResult("BUST!", "#bust-player");
             displayResult("DEALER WINS!", "#win-dealer");
         }, 3000);
 
-        setTimeout(function () {
-            shuffle();
-            reset();
-        }, 5000);
+        // setTimeout(function () {
+        //     shuffle();
+        //     reset();
+        // }, 5000);
     }
 }
 
@@ -260,7 +252,13 @@ function placeYourBet() {
     // check if bankroll < value, hide the chips
     document.querySelector("#place-bet").style.visibility = "visible";
     document.querySelector("#total-bet").style.visibility = "visible";
-    document.querySelector("#bankroll").innerHTML = "$" + bankroll;
+    // document.querySelector("#bankroll").innerText = "$" + bankroll;
+    document
+        .querySelectorAll(".chips")
+        .forEach((e) => (e.style.display = "none"));
+    document
+        .querySelectorAll(".chips")
+        .forEach((e) => (e.style.display = "block"));
     document.querySelector("#chips1").addEventListener("click", function () {
         if (bankroll < 25) {
             return;
@@ -298,8 +296,8 @@ function placeYourBet() {
                 .forEach((e) => (e.style.visibility = "hidden"));
             bankroll += moneyBet;
             moneyBet = 0;
-            document.querySelector("#bankroll").innerHTML = "$" + bankroll;
-            document.querySelector("#total-bet").innerHTML = "$" + moneyBet;
+            document.querySelector("#bankroll").innerText = "$" + bankroll;
+            document.querySelector("#total-bet").innerText = "$" + moneyBet;
         });
 }
 
@@ -314,9 +312,11 @@ function createChipsAtBetsButton(value, element) {
 function totalBet(value) {
     moneyBet += value;
     bankroll -= value;
-    document.querySelector("#total-bet").innerHTML = "$" + moneyBet;
+    // console.log(moneyBet);
+    // console.log(bankroll);
+    document.querySelector("#total-bet").innerText = "$" + moneyBet;
     document.querySelector("#deal-hide-btn").style.visibility = "visible";
-    document.querySelector("#bankroll").innerHTML = "$" + bankroll;
+    document.querySelector("#bankroll").innerText = "$" + bankroll;
     document.querySelector("#reset-bets-btn").style.visibility = "visible";
 }
 
@@ -376,10 +376,10 @@ function results() {
         }
     }
 
-    setTimeout(function () {
-        shuffle();
-        reset();
-    }, 5000);
+    // setTimeout(function () {
+    //     shuffle();
+    //     reset();
+    // }, 5000);
 }
 
 function reset() {
@@ -405,9 +405,9 @@ function reset() {
 
     // Clear the DOM elements
     document.querySelector("#hidden").style.visibility = "hidden";
-    document.querySelector("#points-dealer").innerHTML = "0";
+    document.querySelector("#points-dealer").innerText = "0";
     document.querySelector(".dealer-total").style.visibility = "hidden";
-    document.querySelector("#points-player").innerHTML = "0";
+    document.querySelector("#points-player").innerText = "0";
     document.querySelector(".player-total").style.visibility = "hidden";
     document.querySelector("#hit-btn").style.visibility = "hidden";
     document.querySelector("#stand-btn").style.visibility = "hidden";
@@ -415,32 +415,28 @@ function reset() {
     document.querySelector("#blackjack-player").style.visibility = "hidden";
     document.querySelector("#blackjack-dealer").style.visibility = "hidden";
     document.querySelector("#total-bet").style.visibility = "hidden";
-    document.querySelector("#winner").innerHTML = "";
-    document.querySelector("#win-player").innerHTML = "";
-    document.querySelector("#win-dealer").innerHTML = "";
-    document.querySelector("#bust-dealer").innerHTML = "";
-    document.querySelector(".deck-dealer").innerHTML = "";
+    document.querySelector("#winner").innerText = "";
+    document.querySelector("#win-player").innerText = "";
+    document.querySelector("#win-dealer").innerText = "";
+    document.querySelector("#bust-dealer").innerText = "";
+    document.querySelector(".deck-dealer").innerHTML =
+        "<img id='hidden' src='img/deck/BACK.png' />";
     document.querySelector(".deck-player").innerHTML = "";
-    const createHiddenCard = document.createElement("img");
-    document.querySelector(".deck-dealer").appendChild(createHiddenCard);
-    createHiddenCard.setAttribute("id", "hidden");
-    createHiddenCard.setAttribute("src", "img/deck/Back.png");
 
     document.querySelector("#deal-hide-btn").style.visibility = "hidden";
     document.querySelector("#reset-bets-btn").style.visibility = "hidden";
     document
         .querySelectorAll(".hidden-chip")
         .forEach((e) => (e.style.visibility = "hidden"));
-    document.querySelector("#bankroll").innerHTML = "$" + bankroll;
-    document.querySelector("#total-bet").innerHTML = "$" + moneyBet;
-    document.querySelectorAll(".chips").forEach((e) => (e.disabled = false));
+    document.querySelector("#bankroll").innerText = "$" + bankroll;
+    document.querySelector("#total-bet").innerText = "$" + moneyBet;
 
-    setTimeout(function () {
-        buildDeck();
-        shuffleDeck();
-        placeYourBet();
-        revealPlayerButtons();
-    }, 2000);
+    // setTimeout(function () {
+    //     buildDeck();
+    //     shuffleDeck();
+    //     placeYourBet();
+    //     revealPlayerButtons();
+    // }, 2000);
 }
 //--------------------------------------------------------------------------------------------
 
@@ -459,7 +455,7 @@ function transformStringToNumber(value) {
 
 // a function to create and append card using DOM to display on the web
 function createCardDOM(card, element) {
-    const imgPath = `img\\deck\\${card}.png`;
+    const imgPath = "./img/deck/" + card + ".png";
     // const imgPath = path.join('img', 'deck', `${card}.png`); // does not work. probably environment setting issue with node.js
     const createCard = document.createElement("img");
     document.querySelector(element).appendChild(createCard);
@@ -473,9 +469,9 @@ function createCardDOM(card, element) {
 }
 
 function revealHiddenCardDOM(card, element) {
-    const imgPath = `img\\deck\\${card}.png`;
+    const imgPath = "img/deck/" + card + ".png";
     document.querySelector(element).src = imgPath;
-    document.querySelector("#points-dealer").innerHTML = totalPointsDealer;
+    document.querySelector("#points-dealer").innerText = totalPointsDealer;
 }
 
 function checkNumAce(value) {
@@ -527,7 +523,7 @@ function dealerDrawCard() {
                 dealerCardCount += 1;
                 convertAceDealer();
                 setTimeout(() => {
-                    document.querySelector("#points-dealer").innerHTML =
+                    document.querySelector("#points-dealer").innerText =
                         totalPointsDealer;
                 }, 750);
                 drawNextCard();
@@ -544,7 +540,7 @@ function dealerDrawCard() {
 
 function displayResult(text, element = "#winner") {
     const resultElement = document.querySelector(element);
-    resultElement.innerHTML = text;
+    resultElement.innerText = text;
     resultElement.classList.add("fadeIn");
     resultElement.classList.add("hold");
     setTimeout(function () {
@@ -554,7 +550,7 @@ function displayResult(text, element = "#winner") {
 
 function shuffle(element = "#shuffle") {
     const shuffleElement = document.querySelector(element);
-    shuffleElement.innerHTML = "Shuffling...";
+    shuffleElement.innerText = "Shuffling...";
     shuffleElement.classList.add("fadeIn");
     shuffleElement.classList.add("hold");
     setTimeout(function () {
