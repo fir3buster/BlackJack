@@ -252,7 +252,7 @@ function placeYourBet() {
     // check if bankroll < value, hide the chips
     document.querySelector("#place-bet").style.visibility = "visible";
     document.querySelector("#total-bet").style.visibility = "visible";
-    // document.querySelector("#bankroll").innerText = "$" + bankroll;
+    document.querySelector("#bankroll").innerText = "$" + bankroll;
     document
         .querySelectorAll(".chips")
         .forEach((e) => (e.style.display = "none"));
@@ -313,7 +313,7 @@ function totalBet(value) {
     moneyBet += value;
     bankroll -= value;
     // console.log(moneyBet);
-    // console.log(bankroll);
+    console.log(bankroll);
     document.querySelector("#total-bet").innerText = "$" + moneyBet;
     document.querySelector("#deal-hide-btn").style.visibility = "visible";
     document.querySelector("#bankroll").innerText = "$" + bankroll;
@@ -340,9 +340,9 @@ function revealPlayerButtons() {
                 "hidden";
             document.querySelector("#reset-bets-btn").style.visibility =
                 "hidden";
-            document
-                .querySelectorAll(".chips")
-                .forEach((e) => e.removeAttribute("disabled")); // TAKE NOTE ON RESET
+            document.querySelectorAll(".chips").forEach((e) => {
+                e.disabled = true;
+            }); // TAKE NOTE ON RESET
             startGame();
         });
 }
@@ -430,6 +430,9 @@ function reset() {
         .forEach((e) => (e.style.visibility = "hidden"));
     document.querySelector("#bankroll").innerText = "$" + bankroll;
     document.querySelector("#total-bet").innerText = "$" + moneyBet;
+    document.querySelectorAll("chips").forEach((e) => {
+        e.disabled = true;
+    });
 
     // setTimeout(function () {
     //     buildDeck();
